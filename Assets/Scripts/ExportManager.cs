@@ -12,7 +12,7 @@ public static class ExportManager
     {
         "IV1",
         "IV2",
-        "DV",
+        "DV"
     };
     static string timeStampHeader = "timeStamp";
 

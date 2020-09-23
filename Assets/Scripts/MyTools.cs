@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
 
 public static class MyTools
@@ -27,3 +28,5 @@ public static class MyTools
         EditorApplication.Beep();
     }
 }
+#else
+#endif

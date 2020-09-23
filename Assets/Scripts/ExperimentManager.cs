@@ -14,31 +14,36 @@ public class ExperimentManager : MonoBehaviour
     }
 
     // 타겟지점
-    public Transform target;
-    Vector3 targetScale;
-    TargetClick tc;
+    public RectTransform target_img;
 
     // 시작지점
+    public RectTransform start_img;
     public Transform start;
 
+    // 고정 높이
+    float height = 950f;
 
-    // IV1: 3개
-    float[] scale = { 0.05f, 0.1f, 0.2f };
+    // IV1: 너비 (3개)
+    float[] width = { 15f, 30f, 45f };
 
-    // IV2: 4개
-    float[] distance = { 3f, 6f, 9f, 12f };
+    // IV2: 거리 (4개)
+    float[] distance = { 150f, 300f, 450f, 600f };
 
-    // IV1* IV2
+    // IV1 * IV2: 조합 x * y
     public List<Vector2> condition = new List<Vector2>();
+
+    // 실험횟수
     public int counter = 0;
+
+    // 실험 횟수 = 조건 갯수
     int maxCounter = 12;
 
-    // DV
+    // DV: 걸린 시간
     public List<float> completionTime = new List<float>();
     float timer;
 
     // 테스트 시작 여부
-    bool startTest;
+    bool beforeStart;
     bool testing;
 
     // 결과지
@@ -51,14 +56,8 @@ public class ExperimentManager : MonoBehaviour
     static extern bool SetCursorPos(int X, int Y);
 
 
-
     void Start()
     {
-        // 타겟 비활성화
-        target.gameObject.SetActive(false);
-        targetScale = target.localScale;
-        tc = target.GetComponent<TargetClick>();
-
         // 테스트 컨디션 만들기
         SetCondition();
 
@@ -66,7 +65,7 @@ public class ExperimentManager : MonoBehaviour
         Add_IV();
 
         // 처음엔 아직 테스트 시작 안함
-        startTest = false;
+        beforeStart = false;
         testing = false;
 
         // 결과지 비활성화
@@ -75,16 +74,16 @@ public class ExperimentManager : MonoBehaviour
 
     void SetCondition()
     {
-        // 컨디션 만들기
-        for (int i = 0; i < scale.Length; i++)
+        // 실험 조합 12개 만들기
+        for (int i = 0; i < width.Length; i++)
         {
             for (int j = 0; j < distance.Length; j++)
             {
-                condition.Add(new Vector2(scale[i], distance[j]));
+                condition.Add(new Vector2(width[i], distance[j]));
             }
         }
 
-        // 컨디션 랜덤 셔플
+        // 조합 랜덤 셔플
         for (int i = 0; i < condition.Count; i++)
         {
             Vector2 temp = condition[i];
@@ -109,11 +108,10 @@ public class ExperimentManager : MonoBehaviour
         if (counter < condition.Count)
         {
             // 타겟의 크기
-            targetScale.x = condition[counter].x;
-            target.localScale = targetScale;
+            target_img.sizeDelta = new Vector2(condition[counter].x, height);
 
-            // 타겟의 위치: 시작 위치에서 오른쪽 방향으로 distance만큼
-            target.position = start.position + (Vector3.right * condition[counter].y);
+            // 타겟의 위치: 마우스 시작 위치에서 오른쪽 방향으로 distance만큼
+            target_img.anchoredPosition = new Vector2(start_img.anchoredPosition.x + condition[counter].y, 0);
         }
     }
     void Add_IV()
@@ -140,14 +138,14 @@ public class ExperimentManager : MonoBehaviour
 
     public void OnStartTest()
     {
-        startTest = true;
+        beforeStart = true;
         startCanvas.SetActive(false);
     }
 
 
     void Update()
     {
-        if (!startTest)
+        if (!beforeStart)
             return;
 
         if (counter >= maxCounter)
@@ -164,9 +162,6 @@ public class ExperimentManager : MonoBehaviour
             // 타겟 리셋
             SetTarget();
 
-            // 타겟 활성화
-            target.gameObject.SetActive(true);
-
             // 타이머 시작
             timer += Time.deltaTime;
 
@@ -174,7 +169,7 @@ public class ExperimentManager : MonoBehaviour
             testing = true;
         }
 
-        if (tc.isClicked && counter < maxCounter)
+        if (TargetClick.Instance.isClicked && counter < maxCounter)
         {
             // 테스트 끝
             testing = false;
@@ -185,7 +180,8 @@ public class ExperimentManager : MonoBehaviour
             // 테스트 카운터 올리기
             counter++;
 
-            tc.isClicked = false;
+            // 클릭 변수 리셋
+            TargetClick.Instance.isClicked = false;
         }
     }
 }

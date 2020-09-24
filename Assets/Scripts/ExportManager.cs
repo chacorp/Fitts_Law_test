@@ -6,7 +6,7 @@ using System;
 public static class ExportManager
 {
     static string reportdirectoryName = "Report";
-    static string reportfileName = "report.csv";
+    static string reportfileName = "FittsLaw_trial_result.csv";
     static string reportSeparator = ",";
     static string[] reportHeaders = new string[3]
     {

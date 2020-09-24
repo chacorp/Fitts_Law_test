@@ -17,7 +17,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
 % 데이터 가져오기
-result = readtable("C:\Users\User\Desktop\Dynamics of HCI_HW3_20204571_SihunCha\FittsLaw_taskResult.csv", opts);
+result = readtable("D:\CSH\Fitts_Law_test\Dynamics of HCI_HW3_20204571_SihunCha\FittsLaw_taskResult.csv", opts);
 
 %% 임시 변수 지우기
 clear opts
@@ -31,11 +31,10 @@ d = result.distance';
 y = result.meanTCT';
 
 % x값 = index of difficulty
-x = d./w;
-x = log2(x+1);
+x = log2(d./w+1);
 
 % 피팅
-plot(x,y,'.'); 
+plot(x, y, '.'); 
 xlabel('index of difficulty');
 ylabel('mean trial completion time');
 
@@ -52,9 +51,9 @@ y_prediction = a*x + b;
 
 hold on;
 
-% 선형 그래프
-plot(x,y_prediction); 
+%% 선형 그래프
+plot(x, y_prediction,'.'); 
 
-final_a = mdl.Coefficients.Estimate(1)
+final_a = a
 
-final_b = mdl.Coefficients.Estimate(2)
+final_b = b

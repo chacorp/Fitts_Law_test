@@ -2,11 +2,10 @@ close all
 clear all
 clc
 
-%% 가져오기 옵션을 설정하고 데이터 가져오기
 opts = spreadsheetImportOptions("NumVariables", 3);
 
 % 시트와 범위 지정
-opts.Sheet = "FittsLaw_trial_result";
+opts.Sheet = "FittsLaw_trial_result_3";
 opts.DataRange = "D2:F13";
 
 % 열 이름과 유형 지정
@@ -14,7 +13,8 @@ opts.VariableNames = ["w", "d", "MeanTCT"];
 opts.VariableTypes = ["double", "double", "double"];
 
 % 데이터 가져오기
-result = readtable("/Users/sihuncha/Documents/Dynamics-HCI/Fitts_Law_test/Dynamics of HCI_HW3_20204571_SihunCha/FittsLaw_trial_result.xlsx", opts, "UseExcel", false);
+result = readtable("/Users/sihuncha/Documents/Dynamics-HCI/Fitts_Law_test/Dynamics of HCI_HW3_20204571_SihunCha/FittsLaw_trial_result_3.xlsx", opts, "UseExcel", false);
+
 
 %% 임시 변수 지우기
 clear opts

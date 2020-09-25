@@ -6,7 +6,7 @@ using System;
 public static class ExportManager
 {
     static string reportdirectoryName = "Report";
-    static string reportfileName = "FittsLaw_trial_result_2.csv";
+    static string reportfileName = "FittsLaw_trial_result_3.csv";
     static string reportSeparator = ",";
     static string[] reportHeaders = new string[3]
     {
@@ -52,7 +52,7 @@ public static class ExportManager
                 }
                 finalString += reportHeaders[i];
             }
-            finalString += timeStampHeader;
+            finalString += reportSeparator + timeStampHeader;
             sw.WriteLine(finalString);
         }
     }

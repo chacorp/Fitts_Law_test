@@ -52,10 +52,13 @@ public class ExperimentManager : MonoBehaviour
     public GameObject startCanvas;
     public Text IV;
     public Text DV;
+    
+    // 클릭 변수
+    public bool isClicked = false;
+
 
     [DllImport("user32.dll")]
     static extern bool SetCursorPos(int X, int Y);
-
 
     void Start()
     {
@@ -73,6 +76,14 @@ public class ExperimentManager : MonoBehaviour
         resultCanvas.SetActive(false);
     }
 
+
+    // 클릭하기
+    public void OnTargetClick()
+    {
+        isClicked = true;
+    }
+
+    // IV1 * IV2 만들기
     void SetCondition()
     {
         // 실험 조합 12개 만들기
@@ -94,15 +105,12 @@ public class ExperimentManager : MonoBehaviour
         }
     }
 
+    // mouse 위치 조정하기
     void SetCursor()
     {
-        // start의 월드 좌표를 스크린 좌표로 가져오기
-        Vector2 mPos = Camera.main.WorldToScreenPoint(start.position);
-
-        // 마우스 커서 위치를 start 좌표로 바꾸기
-        SetCursorPos((int)mPos.x, (int)mPos.y);//Call this when you want to set the mouse position
+        // 마우스 커서 위치를 start_img 좌표로 바꾸기
+        SetCursorPos((int)start_img.position.x, (int)start_img.position.y);//Call this when you want to set the mouse position
     }
-
 
     void SetTarget()
     {
@@ -115,11 +123,12 @@ public class ExperimentManager : MonoBehaviour
             target_img.anchoredPosition = new Vector2(start_img.anchoredPosition.x + condition[counter].y, 0);
         }
     }
+
     void Add_IV()
     {
         for (int i = 0; i < condition.Count; i++)
         {
-            string iv = ($"\n IV1: {condition[i].x}, IV2: {condition[i].y}");
+            string iv = ($"\n IV1(width): {condition[i].x}, IV2(distance): {condition[i].y}");
             IV.text += iv;
         }
     }
@@ -141,6 +150,28 @@ public class ExperimentManager : MonoBehaviour
     {
         beforeStart = true;
         startCanvas.SetActive(false);
+    }
+
+    // 출력한 .csv에 더하기
+    public void Dev_AppendToReport()
+    {
+        for (int i = 0; i < ExperimentManager.Instance.condition.Count; i++)
+        {
+            ExportManager.AppendToReport(
+                new string[3]
+                {
+                ExperimentManager.Instance.condition[i].x.ToString(),
+                ExperimentManager.Instance.condition[i].y.ToString(),
+                ExperimentManager.Instance.completionTime[i].ToString()
+                }
+            );
+        }
+    }
+
+    // 새로운 .csv로 출력하기
+    public void Dev_ResetToReport()
+    {
+        ExportManager.CreateReport();
     }
 
 
@@ -173,8 +204,10 @@ public class ExperimentManager : MonoBehaviour
         }
 
 
-        if (TargetClick.Instance.isClicked && counter < maxCounter)
+        if (isClicked && counter < maxCounter)
         {
+            Debug.Log(Input.mousePosition);
+
             // 테스트 끝
             testing = false;
 
@@ -185,7 +218,7 @@ public class ExperimentManager : MonoBehaviour
             counter++;
 
             // 클릭 변수 리셋
-            TargetClick.Instance.isClicked = false;
+            isClicked = false;
         }
     }
 }

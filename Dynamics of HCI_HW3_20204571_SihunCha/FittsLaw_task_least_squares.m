@@ -1,45 +1,42 @@
 close all
 clear all
 clc
-%% 가져오기 옵션을 설정하고 데이터 가져오기
-opts = delimitedTextImportOptions("NumVariables", 3);
 
-% 범위 및 구분 기호 지정
-opts.DataLines = [2, Inf];
-opts.Delimiter = ",";
+%% 가져오기 옵션을 설정하고 데이터 가져오기
+opts = spreadsheetImportOptions("NumVariables", 3);
+
+% 시트와 범위 지정
+opts.Sheet = "FittsLaw_trial_result";
+opts.DataRange = "D2:F13";
 
 % 열 이름과 유형 지정
-opts.VariableNames = ["width", "distance", "meanTCT"];
+opts.VariableNames = ["w", "d", "MeanTCT"];
 opts.VariableTypes = ["double", "double", "double"];
 
-% 파일 수준 속성 지정
-opts.ExtraColumnsRule = "ignore";
-opts.EmptyLineRule = "read";
-
 % 데이터 가져오기
-result = readtable("D:\CSH\Fitts_Law_test\Dynamics of HCI_HW3_20204571_SihunCha\FittsLaw_taskResult.csv", opts);
+result = readtable("/Users/sihuncha/Documents/Dynamics-HCI/Fitts_Law_test/Dynamics of HCI_HW3_20204571_SihunCha/FittsLaw_trial_result.xlsx", opts, "UseExcel", false);
 
 %% 임시 변수 지우기
 clear opts
 
 % IV1 너비 가져오기
-w = result.width';
+w = result.w';
 % IV2 거리 가져오기
-d = result.distance';
+d = result.d';
 
 % y값 = DV 평균 소요시간 가져오기
-y = result.meanTCT';
+y = result.MeanTCT';
 
 % x값 = index of difficulty
 x = log2(d./w+1);
 
 % 피팅
 plot(x, y, '.'); 
-xlabel('index of difficulty');
-ylabel('mean trial completion time');
+xlabel('index of difficulty (bit)');
+ylabel('mean trial completion time (seconds)');
 
 % model fuction
-modelfun = @(b,x)b(1)*x(:,1)+b(2)  % b: parameters, x: independent variable
+modelfun = @(b,x)b(1) * x(:,1)+b(2)  % b: parameters, x: independent variable
 
 beta0 = [0,0]; % initial parameters, a: 0, b:0
 mdl = fitnlm(x, y, modelfun, beta0)
@@ -47,7 +44,7 @@ mdl = fitnlm(x, y, modelfun, beta0)
 a = mdl.Coefficients.Estimate(1);
 b = mdl.Coefficients.Estimate(2);
 
-y_prediction = a*x + b;
+y_prediction = a * x + b;
 
 hold on;
 

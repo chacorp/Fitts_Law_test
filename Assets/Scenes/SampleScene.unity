@@ -900,6 +900,7 @@ MonoBehaviour:
   startCanvas: {fileID: 433611973}
   IV: {fileID: 1863590386}
   DV: {fileID: 1843220473}
+  isClicked: 0
 --- !u!4 &747961850
 Transform:
   m_ObjectHideFlags: 0
@@ -1690,7 +1691,6 @@ GameObject:
   - component: {fileID: 2064118301}
   - component: {fileID: 2064118300}
   - component: {fileID: 2064118299}
-  - component: {fileID: 2064118302}
   m_Layer: 5
   m_Name: target_img
   m_TagString: Untagged
@@ -1760,7 +1760,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2064118302}
+      - m_Target: {fileID: 747961849}
         m_MethodName: OnTargetClick
         m_Mode: 1
         m_Arguments:
@@ -1808,16 +1808,3 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2064118297}
   m_CullTransparentMesh: 0
---- !u!114 &2064118302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064118297}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca5ce9a6a80c82e4caf17661ac098fc8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isClicked: 0

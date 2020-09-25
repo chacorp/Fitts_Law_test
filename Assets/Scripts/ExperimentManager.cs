@@ -24,7 +24,8 @@ public class ExperimentManager : MonoBehaviour
     float height = 950f;
 
     // IV1: 너비 (3개)
-    float[] width = { 15f, 30f, 45f };
+    float[] width = { 10f, 20f, 30f };
+    //float[] width = { 15f, 30f, 45f };
 
     // IV2: 거리 (4개)
     float[] distance = { 150f, 300f, 450f, 600f };
@@ -162,12 +163,15 @@ public class ExperimentManager : MonoBehaviour
             // 타겟 리셋
             SetTarget();
 
-            // 타이머 시작
-            timer += Time.deltaTime;
-
             // 테스트 시작
             testing = true;
         }
+        else
+        {
+            // 타이머 시작
+            timer += Time.deltaTime;
+        }
+
 
         if (TargetClick.Instance.isClicked && counter < maxCounter)
         {

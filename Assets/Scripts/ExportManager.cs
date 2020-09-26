@@ -1,18 +1,19 @@
 ﻿using System.IO;
 using UnityEngine;
-using UnityEditor;
-using System;
 
 public static class ExportManager
 {
     static string reportdirectoryName = "Report";
-    static string reportfileName = "FittsLaw_trial_result_3.csv";
+    static string reportfileName = "FittsLaw_trial_result_4.csv";
     static string reportSeparator = ",";
-    static string[] reportHeaders = new string[3]
+    static string[] reportHeaders = new string[6]
     {
-        "IV1",
-        "IV2",
-        "DV"
+        "Width",
+        "Distance",
+        "MeanTCT",
+        "success",
+        "MousePosition",
+        "TargetPosition"
     };
     static string timeStampHeader = "timeStamp";
 

@@ -18,7 +18,7 @@ public class ExperimentManager : MonoBehaviour
 
     // 시작지점
     public RectTransform start_img;
-    public Transform start;
+    public GameObject report_btn;
 
     // 고정 높이
     float height = 950f;
@@ -123,8 +123,10 @@ public class ExperimentManager : MonoBehaviour
     // mouse 위치 조정하기
     void SetCursor()
     {
+        Vector2 view = Camera.main.ScreenToViewportPoint(start_img.position);
         // 마우스 커서 위치를 start_img 좌표로 바꾸기
-        SetCursorPos((int)start_img.position.x, (int)start_img.position.y);
+        SetCursorPos((int)(Screen.width * view.x), (int)(Screen.height * view.y));
+        //SetCursorPos((int)start_img.position.x, (int)start_img.position.y);
     }
 
     void SetTarget()
@@ -195,6 +197,7 @@ public class ExperimentManager : MonoBehaviour
                 }
             );
         }
+        report_btn.SetActive(false);
     }
 
     void Update()

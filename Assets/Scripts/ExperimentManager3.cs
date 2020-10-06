@@ -5,41 +5,47 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class ExperimentManager : MonoBehaviour
+public class ExperimentManager3 : MonoBehaviour
 {
-    public static ExperimentManager Instance;
-    ExperimentManager()
+    public static ExperimentManager3 Instance;
+    ExperimentManager3()
     {
         Instance = this;
     }
+    // 벽
+    public RectTransform Wall_img_1;
+    public RectTransform Wall_img_2;
+
+    // 길
+    public RectTransform Road_img;
 
     // 타겟지점
     public RectTransform target_img;
 
     // 시작지점
     public RectTransform start_img;
+
+    // 기록 버튼
     public GameObject report_btn;
 
-    // 고정 높이
-    float height = 950f;
+    // IV1: W2값 (3개)
+    float[] width = { 30f, 90f, 180f };
 
-    // IV1: 너비 (3개)
-    float[] width = { 10f, 20f, 30f };
+    // wall settings
+    float[] yPos = { 380f, 389f, 405f, 371f, 384f, 401f };
+    float[] zRot = { 18f, 15f, 11f, 12.7f, 10.7f, 7.5f };
 
-    // IV2: 거리 (4개)
-    float[] distance = { 160f, 310f, 460f, 610f };
+    // IV2: 간격 (2)
+    float[] distance = { 620f, 880f };
 
-    // IV1 * IV2: 조합 x * y
-    public List<Vector2> condition = new List<Vector2>();
-    public List<float> mousePos = new List<float>();
-    public List<float> targetPos = new List<float>();
-    public List<bool> successList = new List<bool>();
-    public Vector2 startPos;
+    // IV1 * IV2
+    public List<Vector3> condition = new List<Vector3>();
+
     // 실험횟수
     public int counter = 0;
 
     // 실험 횟수 = 조건 갯수
-    int maxCounter = 12;
+    int maxCounter = 6;
 
     // DV: 걸린 시간
     public List<float> completionTime = new List<float>();
@@ -66,6 +72,8 @@ public class ExperimentManager : MonoBehaviour
 
     void Start()
     {
+        startCanvas.SetActive(true);
+
         // 테스트 컨디션 만들기
         SetCondition();
 
@@ -80,84 +88,87 @@ public class ExperimentManager : MonoBehaviour
         resultCanvas.SetActive(false);
     }
 
-
-    void OnMouseClick()
+    public void OnMouseHitWall()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            // 타겟의 범위 내에서 클릭했다면,
-            if (target_img.position.x - condition[counter].x / 2 < Input.mousePosition.x && Input.mousePosition.x < target_img.position.x + condition[counter].x / 2)
-            {
-                // 성공
-                success = true;
-                mousePos.Add(Input.mousePosition.x);
-                isClicked = true;
-            }
-            // 실패
-            //mousePos.Add(Input.mousePosition.x);
-            //isClicked = true;
-        }
+        // 마우스 리셋
+        SetCursor();
+
+        // 타이머 리셋
+        timer = 0;
     }
 
-    // IV1 * IV2 만들기
+    public void OnMouseEnterGoal()
+    {
+        // 성공
+        success = true;
+        isClicked = true;
+    }
+
+    // 6개 컨디션 만들기
     void SetCondition()
     {
-        // 실험 조합 12개 만들기
-        for (int i = 0; i < width.Length; i++)
+        // 실험 조합 6개 리스트에 담기
+        for (int i = 0; i < 6; i++)
         {
-            for (int j = 0; j < distance.Length; j++)
+            if (i < 3)
             {
-                condition.Add(new Vector2(width[i], distance[j]));
+                condition.Add(new Vector3(distance[0], yPos[i], zRot[i]));
+            }
+            else
+            {
+                condition.Add(new Vector3(distance[1], yPos[i], zRot[i]));
             }
         }
 
         // 조합 랜덤 셔플
         for (int i = 0; i < condition.Count; i++)
         {
-            Vector2 temp = condition[i];
+            Vector3 temp = condition[i];
             int randomIndex = Random.Range(i, condition.Count);
             condition[i] = condition[randomIndex];
             condition[randomIndex] = temp;
         }
-        startPos = start_img.position;
     }
 
     // mouse 위치 조정하기
     void SetCursor()
     {
         Vector2 view = Camera.main.ScreenToViewportPoint(start_img.position);
+
         // 마우스 커서 위치를 start_img 좌표로 바꾸기
         SetCursorPos((int)(Screen.width * view.x), (int)(Screen.height * view.y));
-        //SetCursorPos((int)start_img.position.x, (int)start_img.position.y);
     }
 
     void SetTarget()
     {
         if (counter < condition.Count)
         {
-            // 타겟의 크기
-            target_img.sizeDelta = new Vector2(condition[counter].x, height);
+            // 트랙 세팅
+            Wall_img_1.anchoredPosition = new Vector2(0, condition[counter].y);
+            Wall_img_1.localEulerAngles = new Vector3(0, 0, -condition[counter].z);
 
-            // 타겟의 위치: 마우스 시작 위치에서 오른쪽 방향으로 distance만큼
-            target_img.anchoredPosition = new Vector2(start_img.anchoredPosition.x + condition[counter].y, 0);
+            Wall_img_2.anchoredPosition = new Vector2(0, -condition[counter].y);
+            Wall_img_2.localEulerAngles = new Vector3(0, 0, condition[counter].z);
 
-            targetPos.Add(target_img.position.x);
+            // 거리 조절하기
+            Road_img.sizeDelta = new Vector2(condition[counter].x, 1050);
         }
     }
 
+    // IV 더하기
     void Add_IV()
     {
         for (int i = 0; i < condition.Count; i++)
         {
-            string iv = ($"\n IV1(W): {condition[i].x}, IV2(D): {condition[i].y}");
+            string iv = ($"\n IV1(w): {condition[i].y}, IV2(D): {condition[i].x}");
             IV.text += iv;
         }
     }
 
+    // DV 더하기
     void Add_DV()
     {
         completionTime.Add(timer);
-        successList.Add(success);
         string a;
         if (success)
         {
@@ -188,14 +199,11 @@ public class ExperimentManager : MonoBehaviour
         for (int i = 0; i < condition.Count; i++)
         {
             ExportManager.AppendToReport(
-                new string[6]
+                new string[3]
                 {
-                    condition[i].x.ToString(),
                     condition[i].y.ToString(),
+                    condition[i].x.ToString(),
                     completionTime[i].ToString(),
-                    successList[i].ToString(),
-                    mousePos[i].ToString(),
-                    targetPos[i].ToString()
                 }
             );
         }
@@ -213,16 +221,13 @@ public class ExperimentManager : MonoBehaviour
             return;
         }
 
-        // 마우스 클릭하면 위치 기록
-        OnMouseClick();
-
         if (!testing)
         {
-            // 마우스 리셋
-            SetCursor();
-
             // 타겟 리셋
             SetTarget();
+
+            // 마우스 리셋
+            SetCursor();
 
             // 테스트 시작
             testing = true;

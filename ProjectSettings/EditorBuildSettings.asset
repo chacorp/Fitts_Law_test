@@ -5,7 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+  - enabled: 0
+    path: Assets/Scenes/FittsLaw.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 0
+    path: Assets/Scenes/Steering_Straight.unity
+    guid: ac57d8ca9ff488c49bbf1b2208ec1145
+  - enabled: 1
+    path: Assets/Scenes/Steering_Narrow.unity
+    guid: ca70c0456d19e084e985f2f1404f4912
   m_configObjects: {}

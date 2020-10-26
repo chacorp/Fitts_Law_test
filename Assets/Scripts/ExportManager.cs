@@ -6,14 +6,15 @@ public static class ExportManager
     static string reportdirectoryName = "Report";
     static string reportfileName = "Steering_task_N_result.csv";
     static string reportSeparator = ",";
-    static string[] reportHeaders = new string[6]
+    static string[] reportHeaders = new string[1]
     {
-        "Width",
-        "Distance",
-        "MeanTCT",
-        "success",
-        "MousePosition",
-        "TargetPosition"
+        //"Width",
+        //"Distance",
+        //"MeanTCT",
+        //"success",
+        //"MousePosition",
+        //"TargetPosition"
+        "ReactionTime"
     };
     static string timeStampHeader = "timeStamp";
 

@@ -4,9 +4,9 @@ using UnityEngine;
 public static class ExportManager
 {
     static string reportdirectoryName = "Report";
-    static string reportfileName = "Simple-Choice_result.csv";
+    static string reportfileName = "Simple-Choice_result-().csv";
     static string reportSeparator = ",";
-    static string[] reportHeaders = new string[2]
+    static string[] reportHeaders = new string[4]
     {
         //"Width",
         //"Distance",
@@ -15,7 +15,9 @@ public static class ExportManager
         //"MousePosition",
         //"TargetPosition"
         "ReactionTime",
-        "Success"
+        "Success",
+        "Stimuli",
+        "Response"
     };
     static string timeStampHeader = "timeStamp";
 

@@ -28,6 +28,8 @@ public class ReactionExperimentManager : MonoBehaviour
     List<Text> image_txt = new List<Text>();
     List<Image> exp_box = new List<Image>();
 
+    List<int> exp_Stimuli = new List<int>();
+    List<int> exp_Response = new List<int>();
 
     [Header("실험 설정")]
     // 실험 설명
@@ -115,10 +117,12 @@ public class ReactionExperimentManager : MonoBehaviour
         for (int i = 0; i < reaction_result.Count; i++)
         {
             ExportManager.AppendToReport(
-                new string[2]
+                new string[4]
                 {
                     reaction_result[i].ToString(),
-                    reaction_success[i].ToString()
+                    reaction_success[i].ToString(),
+                    image_label[exp_Stimuli[i]],
+                    image_label[exp_Response[i]]
                 }
             );
         }
@@ -250,7 +254,7 @@ public class ReactionExperimentManager : MonoBehaviour
     {
         for (int i = 0; i < reaction_result.Count; i++)
         {
-            string rt = ($"\n {r_Type} - {i}: {reaction_result[i]}...{reaction_success[i]}");
+            string rt = ($"\n {r_Type} - {i}: {reaction_result[i]}, success: {reaction_success[i]}, stimuli: {image_label[exp_Stimuli[i]]}, response: {image_label[exp_Response[i]]}");
             print(1);
             result_txt.text += rt;
         }
@@ -260,6 +264,8 @@ public class ReactionExperimentManager : MonoBehaviour
     void SelectRandomBox(int maxValue)
     {
         select_Box = Random.Range(0, maxValue);
+        // 주어진 박스 정보 담기!!
+        exp_Stimuli.Add(select_Box);
     }
 
 
@@ -290,6 +296,8 @@ public class ReactionExperimentManager : MonoBehaviour
             // 버튼을 눌렀는데, 누른 버튼과 박스가 일치한다면! 기록하고 리셋하기
             if (pushedKey > -1)
             {
+                // 누른 버튼 정보 담기!!
+                exp_Response.Add(pushedKey);
                 // 성공여부
                 bool success = pushedKey == exp_box.IndexOf(boxC) ? true : false;
 

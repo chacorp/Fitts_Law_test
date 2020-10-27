@@ -11,13 +11,15 @@ public class ReactionExperimentManager : MonoBehaviour
     public GameObject selectDropdown;
     public GameObject startButtton;
     public GameObject saveButton;
-    public GameObject againButton;
+    public GameObject menuButton;
+    public GameObject returnButton;
 
 
     [Header("결과지")]
     public GameObject result_img;
     Text result_txt;
     List<float> reaction_result = new List<float>();
+    List<bool> reaction_success = new List<bool>();
 
 
     [Header("네모난 박스")]
@@ -29,7 +31,7 @@ public class ReactionExperimentManager : MonoBehaviour
 
     [Header("실험 설정")]
     // 실험 설명
-    public Text decript;
+    public Text descript;
 
 
     // 걍 색상
@@ -80,7 +82,7 @@ public class ReactionExperimentManager : MonoBehaviour
 
         wait = false;
         startExp = false;
-        decript.enabled = false;
+        descript.gameObject.SetActive(false);
 
         foreach (Image box in image_box)
         {
@@ -96,7 +98,8 @@ public class ReactionExperimentManager : MonoBehaviour
         selectDropdown.SetActive(true);
         startButtton.SetActive(true);
         saveButton.SetActive(false);
-        againButton.SetActive(false);
+        menuButton.SetActive(false);
+        returnButton.SetActive(false);
     }
 
 
@@ -107,33 +110,35 @@ public class ReactionExperimentManager : MonoBehaviour
     }
 
     // csv 파일로 저장
-    public void Dev_AppendToReport()
+    public void Dev_AppendToReport()// #=============================== [ 항상 같은 이름으로 저장하기 때문에, 이전 결과가 덮어쓰여진다! 파일이 생성되면, 이름을 바꿔둘 것! ]
     {
         for (int i = 0; i < reaction_result.Count; i++)
         {
             ExportManager.AppendToReport(
-                new string[1]
+                new string[2]
                 {
                     reaction_result[i].ToString(),
+                    reaction_success[i].ToString()
                 }
             );
         }
         saveButton.SetActive(false);
     }
 
-    // 실험 방식 선택 ============================ [드랍다운용]
+    // 실험 방식 선택 #================================================= [드랍다운용]
     public void OnSelectExperiment(int value)
     {
         r_Type = (Reaction_Type)value;
     }
 
-    // 실험 시작 클릭 ============================ [버튼용]
+    // 실험 시작 클릭 #================================================= [버튼용]
     public void OnStartClick()
     {
         // 필요없는 메뉴 닫기
         selectDropdown.SetActive(false);
         startButtton.SetActive(false);
-        decript.enabled = true;
+        returnButton.SetActive(true);
+        descript.gameObject.SetActive(true);
 
         int idx = image_box.Count / 2;
 
@@ -199,7 +204,10 @@ public class ReactionExperimentManager : MonoBehaviour
         startExp = true;
     }
 
-
+    public void OnEndAppClick()
+    {
+        Application.Quit();
+    }
 
     // 기다리는 시간 설정! 0 ~ 5초
     void SetWaitingTime()
@@ -242,7 +250,7 @@ public class ReactionExperimentManager : MonoBehaviour
     {
         for (int i = 0; i < reaction_result.Count; i++)
         {
-            string rt = ($"\n {r_Type} - {i}: {reaction_result[i]}");
+            string rt = ($"\n {r_Type} - {i}: {reaction_result[i]}...{reaction_success[i]}");
             print(1);
             result_txt.text += rt;
         }
@@ -279,12 +287,15 @@ public class ReactionExperimentManager : MonoBehaviour
             reactionTime += Time.deltaTime;
             boxC.color = signalC;
 
-            // 누른 버튼과 박스가 일치한다면! 기록하고 리셋하기
-            if (pushedKey == exp_box.IndexOf(boxC))
+            // 버튼을 눌렀는데, 누른 버튼과 박스가 일치한다면! 기록하고 리셋하기
+            if (pushedKey > -1)
             {
+                // 성공여부
+                bool success = pushedKey == exp_box.IndexOf(boxC) ? true : false;
+
                 // 반응시간 저장
                 reaction_result.Add(reactionTime);
-                //print(reactionTime);
+                reaction_success.Add(success);
 
                 // 반응시간 리셋
                 reactionTime = 0;
@@ -318,7 +329,8 @@ public class ReactionExperimentManager : MonoBehaviour
             Print_Result();
             result_img.SetActive(true);
             saveButton.SetActive(true);
-            againButton.SetActive(true);
+            menuButton.SetActive(true);
+            returnButton.SetActive(false);
             startExp = false;
         }
     }
